@@ -27,6 +27,6 @@ if __name__ == '__main__':
             centroids = cvt.match_pair()
             cvt.plot_figure()
             coords = cvt.cal_tra()
-            coords = barrier_certificates(coords, centroids, safety_radius=0.5)
+            coords = barrier_certificates(coords, centroids, safety_radius=0.5, show_time=True)
     except:
         pass

@@ -23,6 +23,7 @@ class plotting():
         self.ax1.set_xlim([0,4])
         self.ax1.set_ylim([0,4])
         self.iteration = 1
+        
 
     def plot_density(self):
         self.ax2.scatter_density(self.x_unit, self.y_unit, cmap='tab20', norm=self.norm, alpha = 0.5)

@@ -7,6 +7,9 @@ from math import *
 import time
 
 options['show_progress'] = False
+options['reltol'] = 1e-2 # was e-2
+options['feastol'] = 1e-2 # was e-4
+options['maxiters'] = 50 # default is 100
 
 def si_position_controller(xi, positions, x_velocity_gain=1, y_velocity_gain=1, velocity_magnitude_limit=1):
     _,N = np.shape(xi)
@@ -24,7 +27,7 @@ def si_position_controller(xi, positions, x_velocity_gain=1, y_velocity_gain=1, 
 
     return dxi
 
-def si_barrier_cert(dxi, x, safety_radius, barrier_gain=80, magnitude_limit=0.4):
+def si_barrier_cert(dxi, x, safety_radius, show_time, barrier_gain=80, magnitude_limit=0.4):
     N = dxi.shape[1]
     num_constraints = int(comb(N, 2))
     A = np.zeros((num_constraints, 2*N))
@@ -48,15 +51,18 @@ def si_barrier_cert(dxi, x, safety_radius, barrier_gain=80, magnitude_limit=0.4)
     dxi[:, idxs_to_normalize] *= magnitude_limit/norms[idxs_to_normalize]
 
     f = -2*np.reshape(dxi, 2*N, order='F')
+    start_time = time.time()
     result = qp(H, matrix(f), matrix(A), matrix(b))['x']
+    if show_time:
+        print("--- %s seconds ---" % (time.time() - start_time))
 
     return np.reshape(result, (2, -1), order='F')
 
-def barrier_certificates(new_coords, new_centroids, safety_radius):
+def barrier_certificates(new_coords, new_centroids, safety_radius, show_time=False):
     x_si = np.dstack(new_coords)[0]
     x_goal = np.dstack(new_centroids)[0]
     dxi = si_position_controller(x_si, x_goal)
-    dxi = si_barrier_cert(dxi, x_si, safety_radius)
+    dxi = si_barrier_cert(dxi, x_si, safety_radius, show_time)
     x_si = np.add(x_si, dxi)
     x_si = np.dstack((x_si[0], x_si[1]))[0]
     new_coords = x_si
