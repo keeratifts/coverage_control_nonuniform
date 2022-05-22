@@ -1,4 +1,4 @@
-# coverage_control_nonuniform
+# Non-uniform Coverage Control
 Non-uniform coverage control based density & control barrier function
 
 Safety range = 0
