@@ -19,14 +19,14 @@ if __name__ == '__main__':
 
 
     cvt = non_uniform_cvt(10000, [1.3,1.3], 0.35, outer, coords)
-    # coords = cvt.generate_random(N_POINTS) #generate random coords
+    #coords = cvt.generate_random(N_POINTS) #generate random coords
     try:
         for j in range(1, N):
             cvt.voronoi_partition(coords)
-            cvt.centroid_calculation()
+            cvt.centroid_calculation() #density function
             centroids = cvt.match_pair()
             cvt.plot_figure()
             coords = cvt.cal_tra()
-            coords = barrier_certificates(coords, centroids, safety_radius=0.5, show_time=True)
+            coords = barrier_certificates(coords, centroids, safety_radius=0.53)
     except:
         pass

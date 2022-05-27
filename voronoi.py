@@ -21,10 +21,20 @@ class voronoi():
             if self.area_shape.contains(pnt):
                 self.coords.append(pnt)
         self.coords = points_to_coords(self.coords)
+        self.old_centroids = (np.zeros((len(self.coords), 2)))
         return self.coords
     
     def update_coords(self, coords):
-        self.pts = [p for p in coords_to_points(coords) if p.within(self.area_shape)]
+        '''
+        If coord out of the area use to old coord instead
+        '''
+        self.pts = [p for p in coords_to_points(coords)]
+        for index, p in enumerate(self.pts):
+            if not p.within(self.area_shape):
+                self.pts[index] = self.old_pts[index]
+        # self.pts = [p for p in coords_to_points(coords) if p.within(self.area_shape)]
+        # print (self.pts)
+        self.old_pts = [p for p in self.pts]
         self.coords = points_to_coords(self.pts)
 
     
@@ -33,6 +43,7 @@ class voronoi():
         self.poly_shapes, self.pts, self.poly_to_pt_assignments = voronoi_regions_from_coords(self.coords, self.area_shape, accept_n_coord_duplicates= 0)
     
     def cal_tra(self):
+        self.old_coords = [p for p in self.coords]
         T=2
         t=np.linspace(0,T,num=300)
         omega = math.pi*2/T

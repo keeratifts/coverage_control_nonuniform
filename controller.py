@@ -11,19 +11,13 @@ options['reltol'] = 1e-2 # was e-2
 options['feastol'] = 1e-2 # was e-4
 options['maxiters'] = 50 # default is 100
 
-def si_position_controller(xi, positions, x_velocity_gain=1, y_velocity_gain=1, velocity_magnitude_limit=1):
+def si_position_controller(xi, positions):
     _,N = np.shape(xi)
     dxi = np.zeros((2, N))
 
         # Calculate control input
     dxi[0][:] = (positions[0][:]-xi[0][:])
     dxi[1][:] = (positions[1][:]-xi[1][:])
-
-        # Threshold magnitude
-    # norms = np.linalg.norm(dxi, axis=0)
-    # idxs = np.where(norms > velocity_magnitude_limit)
-    # if norms[idxs].size != 0:
-    #     dxi[:, idxs] *= velocity_magnitude_limit/norms[idxs]
 
     return dxi
 
@@ -67,6 +61,7 @@ def barrier_certificates(new_coords, new_centroids, safety_radius, show_time=Fal
     x_si = np.dstack((x_si[0], x_si[1]))[0]
     new_coords = x_si
     return new_coords
+
 
 
 
